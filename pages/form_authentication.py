@@ -15,6 +15,7 @@ class FormAuthenticationPage(BasePage):
     LOGOUT_BUTTON = (By.CLASS_NAME, 'button')
 
     def __init__(self, browser):
+        super().__init__(browser)
         self.browser = browser
 
     def get_page_title_text(self):

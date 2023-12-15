@@ -25,6 +25,7 @@ class DynamicControlsPage(BasePage):
     ALTERNATIVE_CHECKBOX = (By.ID, 'checkbox')
 
     def __init__(self, browser):
+        super().__init__(browser)
         self.browser = browser
 
     def get_page_title_text(self):

@@ -12,6 +12,7 @@ class HomePage(BasePage):
     SUBPAGE_LINKS = (By.XPATH, '//*[@id="content"]/ul/li/a')
 
     def __init__(self, browser):
+        super().__init__(browser)
         self.browser = browser
 
     def click_page_link(self, page_name):
