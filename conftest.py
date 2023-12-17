@@ -2,6 +2,7 @@ import pytest
 import selenium.webdriver
 import json
 from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.firefox import GeckoDriverManager
 from pytest_bdd import given, then, parsers
@@ -41,7 +42,9 @@ def browser(config):
         opts = webdriver.ChromeOptions()
         if config['headless']:
             opts.add_argument('headless')
-        b = webdriver.Chrome(ChromeDriverManager().install(), options=opts)
+        b = Service(ChromeDriverManager().install(), options=opts)
+        driver = webdriver.Chrome(service=b, options=opts)
+        driver.get("https://the-internet.herokuapp.com/")
     elif config['browser'] == 'Firefox':
         opts = webdriver.FirefoxOptions()
         if config['headless']:
