@@ -2,7 +2,6 @@ import pytest
 import selenium.webdriver
 import json
 from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.firefox import GeckoDriverManager
 from pytest_bdd import given, then, parsers
@@ -36,23 +35,22 @@ def config(request, scope='session'):
 
 @pytest.fixture
 def browser(config):
-
     # Initialize the WebDriver instance
     if config['browser'] == 'Chrome':
         opts = webdriver.ChromeOptions()
         if config['headless']:
             opts.add_argument('headless')
-        b = Service(ChromeDriverManager().install(), options=opts)
-        driver = webdriver.Chrome(service=b, options=opts)
-        driver.get("https://the-internet.herokuapp.com/")
+        b = webdriver.Chrome(executable_path=ChromeDriverManager().install(), options=opts)
     elif config['browser'] == 'Firefox':
         opts = webdriver.FirefoxOptions()
         if config['headless']:
             opts.headless = True
-        b = webdriver.Firefox(
-            executable_path=GeckoDriverManager().install(), options=opts)
+        b = webdriver.Firefox(executable_path=GeckoDriverManager().install(), options=opts)
     else:
         raise Exception(f'Browser "{config["browser"]}" is not supported')
+
+    # Set implicit wait and page load timeout
+    b.set_page_load_timeout(config['implicit_wait'])
 
     # Make call wait up to 10 seconds for elements to appear
     b.implicitly_wait(config['implicit_wait'])
