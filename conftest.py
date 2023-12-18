@@ -2,6 +2,7 @@ import pytest
 import selenium.webdriver
 import json
 from selenium import webdriver
+from selenium.webdriver.common.options import BaseOptions
 from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.firefox import GeckoDriverManager
 from pytest_bdd import given, then, parsers
@@ -112,3 +113,18 @@ def verify_footer_text(browser, text):
 @then(parsers.parse('the link in the page footer goes to "{url}"'))
 def verify_footer_link_url(browser, url):
     assert url == BasePage(browser).get_page_footer_link_url()
+
+
+@staticmethod
+def driver_location(options: BaseOptions) -> str:
+    if options.driver == 'chrome':
+        return ChromeDriverManager().install()
+    elif options.driver == 'firefox':
+        return GeckoDriverManager().install()
+    else:
+        raise Exception(f'Driver "{options.driver}" is not supported')
+
+
+class BaseOptions:
+    def __init__(self, driver: str):
+        self.driver = driver
