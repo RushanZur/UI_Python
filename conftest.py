@@ -35,22 +35,21 @@ def config(request, scope='session'):
 
 @pytest.fixture
 def browser(config):
+
     # Initialize the WebDriver instance
     if config['browser'] == 'Chrome':
         opts = webdriver.ChromeOptions()
         if config['headless']:
             opts.add_argument('headless')
-        b = webdriver.Chrome(executable_path=ChromeDriverManager().install(), options=opts)
+        b = webdriver.Chrome(ChromeDriverManager().install(), options=opts)
     elif config['browser'] == 'Firefox':
         opts = webdriver.FirefoxOptions()
         if config['headless']:
             opts.headless = True
-        b = webdriver.Firefox(executable_path=GeckoDriverManager().install(), options=opts)
+        b = webdriver.Firefox(
+            executable_path=GeckoDriverManager().install(), options=opts)
     else:
         raise Exception(f'Browser "{config["browser"]}" is not supported')
-
-    # Set implicit wait and page load timeout
-    b.set_page_load_timeout(config['implicit_wait'])
 
     # Make call wait up to 10 seconds for elements to appear
     b.implicitly_wait(config['implicit_wait'])
