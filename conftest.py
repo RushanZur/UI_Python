@@ -35,13 +35,14 @@ def config(request, scope='session'):
 
 @pytest.fixture
 def browser(config):
-
+    config = {'browser': 'Chrome', 'headless': True}
     # Initialize the WebDriver instance
     if config['browser'] == 'Chrome':
         opts = webdriver.ChromeOptions()
         if config['headless']:
             opts.add_argument('headless')
         b = webdriver.Chrome(ChromeDriverManager().install(), options=opts)
+
     elif config['browser'] == 'Firefox':
         opts = webdriver.FirefoxOptions()
         if config['headless']:
