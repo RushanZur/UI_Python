@@ -41,7 +41,7 @@ def browser(config):
         opts = webdriver.ChromeOptions()
         if config['headless']:
             opts.add_argument('headless')
-        b = webdriver.Chrome(ChromeDriverManager().install(opts))
+        b = webdriver.Chrome(ChromeDriverManager().install(options=opts))
     elif config['browser'] == 'Firefox':
         opts = webdriver.FirefoxOptions()
         if config['headless']:
