@@ -2,7 +2,6 @@ import pytest
 import selenium.webdriver
 import json
 from selenium import webdriver
-from selenium.webdriver.common.options import BaseOptions
 from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.firefox import GeckoDriverManager
 from pytest_bdd import given, then, parsers
@@ -36,19 +35,19 @@ def config(request, scope='session'):
 
 @pytest.fixture
 def browser(config):
-    config = {'browser': 'Chrome', 'headless': True}
+
     # Initialize the WebDriver instance
     if config['browser'] == 'Chrome':
         opts = webdriver.ChromeOptions()
         if config['headless']:
             opts.add_argument('headless')
         b = webdriver.Chrome(ChromeDriverManager().install())
-
     elif config['browser'] == 'Firefox':
         opts = webdriver.FirefoxOptions()
         if config['headless']:
             opts.headless = True
-        b = webdriver.Firefox(GeckoDriverManager().install())
+        b = webdriver.Firefox(
+            executable_path=GeckoDriverManager().install())
     else:
         raise Exception(f'Browser "{config["browser"]}" is not supported')
 
@@ -113,18 +112,3 @@ def verify_footer_text(browser, text):
 @then(parsers.parse('the link in the page footer goes to "{url}"'))
 def verify_footer_link_url(browser, url):
     assert url == BasePage(browser).get_page_footer_link_url()
-
-
-@staticmethod
-def driver_location(options: BaseOptions) -> str:
-    if options.driver == 'chrome':
-        return ChromeDriverManager().install()
-    elif options.driver == 'firefox':
-        return GeckoDriverManager().install()
-    else:
-        raise Exception(f'Driver "{options.driver}" is not supported')
-
-
-class BaseOptions:
-    def __init__(self, driver: str):
-        self.driver = driver
