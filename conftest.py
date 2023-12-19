@@ -41,13 +41,13 @@ def browser(config):
         opts = webdriver.ChromeOptions()
         if config['headless']:
             opts.add_argument('headless')
-        b = webdriver.Chrome(ChromeDriverManager().install())
+        b = webdriver.Chrome(ChromeDriverManager().install(), options=opts)
     elif config['browser'] == 'Firefox':
         opts = webdriver.FirefoxOptions()
         if config['headless']:
             opts.headless = True
         b = webdriver.Firefox(
-            executable_path=GeckoDriverManager().install())
+            executable_path=GeckoDriverManager().install(), options=opts)
     else:
         raise Exception(f'Browser "{config["browser"]}" is not supported')
 
@@ -56,9 +56,6 @@ def browser(config):
 
     # Return the WebDriver instance for the setup
     yield b
-
-    # Quit the WebDriver instance for the teardown
-    b.quit()
 
 
 @pytest.fixture
