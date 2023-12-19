@@ -40,13 +40,12 @@ def browser(config):
         opts = webdriver.ChromeOptions()
         if config['headless']:
             opts.add_argument('headless')
-        b = webdriver.Chrome(ChromeDriverManager().install(), options=opts)
+        b = webdriver.Chrome(ChromeDriverManager().install())
     elif config['browser'] == 'Firefox':
         opts = webdriver.FirefoxOptions()
         if config['headless']:
             opts.headless = True
-        b = webdriver.Firefox(
-            executable_path=GeckoDriverManager().install(), options=opts)
+        b = webdriver.Firefox(executable_path=GeckoDriverManager().install())
     else:
         raise Exception(f'Browser "{config["browser"]}" is not supported')
 
