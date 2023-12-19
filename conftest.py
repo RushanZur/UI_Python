@@ -34,7 +34,6 @@ def config(request, scope='session'):
 
 @pytest.fixture
 def browser(config):
-
     # Initialize the WebDriver instance
     if config['browser'] == 'Chrome':
         opts = webdriver.ChromeOptions()
@@ -56,6 +55,9 @@ def browser(config):
     yield b
 
     # Quit the WebDriver instance for the teardown
+    b.quit()
+
+# Quit the WebDriver instance for the teardown
     b.quit()
 
 @pytest.fixture
