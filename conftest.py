@@ -2,7 +2,6 @@ import pytest
 import selenium.webdriver
 import json
 from selenium import webdriver
-from selenium.webdriver.common.options import BaseOptions
 from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.firefox import GeckoDriverManager
 from pytest_bdd import given, then, parsers
@@ -33,22 +32,21 @@ def config(request, scope='session'):
     # Return config so it can be used
     return config
 
-
 @pytest.fixture
 def browser(config):
 
     # Initialize the WebDriver instance
     if config['browser'] == 'Chrome':
-        options = webdriver.ChromeOptions()
+        opts = webdriver.ChromeOptions()
         if config['headless']:
-            options.add_argument('headless')
-        b = webdriver.Chrome(ChromeDriverManager().install())
+            opts.add_argument('headless')
+        b = webdriver.Chrome(ChromeDriverManager().install(), options=opts)
     elif config['browser'] == 'Firefox':
         opts = webdriver.FirefoxOptions()
         if config['headless']:
             opts.headless = True
         b = webdriver.Firefox(
-            executable_path=GeckoDriverManager().install())
+            executable_path=GeckoDriverManager().install(), options=opts)
     else:
         raise Exception(f'Browser "{config["browser"]}" is not supported')
 
@@ -58,27 +56,12 @@ def browser(config):
     # Return the WebDriver instance for the setup
     yield b
 
-def BasePage():
-    @staticmethod
-    def driver_location(options: BaseOptions) -> str:
-        """Determines the path of the correct driver.
-
-        :param options:
-        :param browser: which browser to get the driver path for.
-        :return: The driver path to use
-        """
-        browser = options.browser
-        if browser == 'Chrome':
-            return ChromeDriverManager().install()
-        elif browser == 'Firefox':
-            return GeckoDriverManager().install()
-        else:
-            raise Exception(f'Browser "{browser}" is not supported')
+    # Quit the WebDriver instance for the teardown
+    b.quit()
 
 @pytest.fixture
 def datatable():
     return DataTable()
-
 
 class DataTable(object):
 
@@ -94,12 +77,10 @@ class DataTable(object):
     def __repr__(self) -> str:
         return self.__str__()
 
-
 @given(parsers.parse('I have navigated to the \'the-internet\' "{page_name}" page'), target_fixture='navigate_to')
 def navigate_to(browser, page_name):
     url = BasePage.PAGE_URLS.get(page_name.lower())
     browser.get(url)
-
 
 @then(parsers.parse('a "{text}" banner is displayed in the top-right corner of the page'))
 def verify_banner_text(browser, text):
@@ -117,11 +98,9 @@ def verify_banner_text(browser, text):
         if attr.startswith("border"):
             assert "0px" == attr.split(": ")[1]
 
-
 @then(parsers.parse('the page has a footer containing "{text}"'))
 def verify_footer_text(browser, text):
     assert text == BasePage(browser).get_page_footer_text()
-
 
 @then(parsers.parse('the link in the page footer goes to "{url}"'))
 def verify_footer_link_url(browser, url):
