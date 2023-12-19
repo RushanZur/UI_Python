@@ -2,6 +2,7 @@ import pytest
 import selenium.webdriver
 import json
 from selenium import webdriver
+from selenium.webdriver.common.options import BaseOptions
 from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.firefox import GeckoDriverManager
 from pytest_bdd import given, then, parsers
@@ -57,6 +58,22 @@ def browser(config):
     # Return the WebDriver instance for the setup
     yield b
 
+def BasePage():
+    @staticmethod
+    def driver_location(options: BaseOptions) -> str:
+        """Determines the path of the correct driver.
+
+        :param options:
+        :param browser: which browser to get the driver path for.
+        :return: The driver path to use
+        """
+        browser = options.browser
+        if browser == 'Chrome':
+            return ChromeDriverManager().install()
+        elif browser == 'Firefox':
+            return GeckoDriverManager().install()
+        else:
+            raise Exception(f'Browser "{browser}" is not supported')
 
 @pytest.fixture
 def datatable():
