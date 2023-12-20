@@ -1,5 +1,4 @@
 import pytest
-import selenium.webdriver
 import json
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
@@ -11,12 +10,12 @@ def pytest_addoption(parser):
     parser.addoption("--browser", action="store")
 
 @pytest.fixture
-def config(request):
+def config(request, scope='session'):
 
     BROWSERS = ['Chrome', 'Firefox']
 
     # Read config file
-    with open('C:/Users/79276/selenium-python-pytest-bdd-main/config.json', 'r') as config_file:
+    with open('config.json', 'r') as config_file:
         config = json.load(config_file)
 
     browser = request.config.option.browser
