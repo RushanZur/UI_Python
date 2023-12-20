@@ -15,7 +15,7 @@ def config(request, scope='session'):
     BROWSERS = ['Chrome', 'Firefox']
 
     # Read config file
-    with open('C:/Users/79276/selenium-python-pytest-bdd-main/config.json', 'r') as config_file:
+    with open('config.json', 'r') as config_file:
         config = json.load(config_file)
 
     browser = request.config.option.browser
