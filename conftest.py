@@ -11,12 +11,12 @@ def pytest_addoption(parser):
     parser.addoption("--browser", action="store")
 
 @pytest.fixture
-def config(request, scope='session'):
+def config(request):
 
     BROWSERS = ['Chrome', 'Firefox']
 
     # Read config file
-    with open('config.json') as config_file:
+    with open('C:/Users/79276/selenium-python-pytest-bdd-main/config.json', 'r') as config_file:
         config = json.load(config_file)
 
     browser = request.config.option.browser
